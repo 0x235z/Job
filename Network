@@ -1,0 +1,43 @@
+local Network = {}
+Network.__index = Network
+
+local getupvalues = getupvalues or debug.getupvalues
+local setupvalue = setupvalue or debug.setupvalue
+local network, index
+return function()
+	-- hook mouse cooldown and network
+	local registry = (getreg or debug.getregistry)()
+	for _, reg in registry do
+		if type(reg) == "function" and tostring(getfenv(reg).script) == "Paycheck" then
+			for i, v in getupvalues(reg) do
+				setupvalue(reg, i, {
+					MouseButton1Click = {
+						wait = function() end,
+						Wait = function() end
+					}
+				})
+			end
+		elseif type(reg) == "table" and rawget(reg, "FireServer") and rawget(reg, "BindEvents") then
+			network = reg
+		end
+	end
+
+	local mt = getrawmetatable(game)
+	if setreadonly then
+		setreadonly(mt, false)
+	elseif make_writeable then
+		make_writeable(mt)
+	end
+
+	local new_index = mt.__newindex
+	mt.__newindex = function(instance, value, func)
+		if instance ~= workspace.CurrentCamera or tostring(getfenv(2).script) ~= "LocalMain" then
+			return new_index(instance, value, func)
+		end
+	end
+
+	workspace.Main.RealignCamera.RealignCamera:Destroy()
+	Instance.new("BindableEvent", workspace.Main.RealignCamera).Name = "RealignCamera"
+
+	return network
+end
