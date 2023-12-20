@@ -1,0 +1,91 @@
+local Assets = {}
+
+-- dialog
+function Assets.Dialog()
+	for i, v in workspace.Customers:GetChildren() do
+		local head, humanoid = v:FindFirstChild("Head"), v:FindFirstChild("Humanoid")
+		if head and humanoid and head.CFrame.Z < 102 and head:FindFirstChild("Dialog") and head.Dialog:FindFirstChild("Correct") and humanoid.SeatPart and humanoid.SeatPart.Anchored or (not humanoid.SeatPart and (head.Velocity.Z ^ 2)^.5 < 0.0001) then
+			return v
+		end
+	end
+end
+
+--  boxers
+function Assets.Boxer()
+	local boxs = {
+		BoxClosed = nil,
+		BoxOpen = nil
+	}
+	
+	for i, v in workspace.AllBox:GetChildren() do
+		if boxs[v.Name] and not v.Anchored then
+			boxs[v.Name] = v
+		end
+	end
+
+	return boxs
+end
+
+-- dew
+function Assets.Dew()
+	for i, v in workspace.AllMountainDew:GetChildren() do
+		if not v.Anchored then
+			return v
+		end
+	end
+end
+
+-- foods
+function Assets.Foods()
+	local foods = {
+		Pizza = nil,
+		Dew = nil
+	}
+
+	for i, v in workspace.BoxingRoom:GetChildren() do
+		if foods[v.Name] and not v.Anchored then
+			foods[v.Name] = v
+		end
+	end
+
+	return foods
+end
+
+-- orders
+local orders_dicts = {
+	[3540529228] = "Cheese",
+	[3540530535] = "Sausage",
+	[3540529917] ="Pepperoni",
+	[2512571151] = "Dew",
+	[2512441325] = "Dew"
+}
+
+local dicts = {
+	Cheese = 0,
+	Sausage = 0,
+	Pepperoni = 0,
+	Dew = 0
+}
+
+function Assets.getOrders(conts)
+	local ticks = {}
+	for i, v in dicts do
+		ticks[i] = v
+	end
+
+	local orders = {}
+	for i, v in workspace.Orders:GetChildren() do
+		local dialog = orders_dicts[v.SG.ImageLabel.Image:match("%d+$")]
+		if dialog then
+			if ticks[dialog] > 0 then
+				ticks[dialog] -= 1
+			elseif dialog == "Dew" and #workspace.AllMountainDew:GetChildren() > 0 or ticks[dialog] > 0 and conts.TomatoSauce > 0 and conts.Cheese > 0 then
+				orders[#orders + 1] = v
+			end
+		end
+	end
+
+	return orders
+end
+
+return Assets
