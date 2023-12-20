@@ -1,3 +1,5 @@
+--I didnt finish :p
+
 local Network = require(game.ReplicatedStorage.GetNetwork)()
 assert(Network, "Failed to find network")
 
