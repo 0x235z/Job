@@ -3,7 +3,7 @@ Network.__index = Network
 
 local getupvalues = getupvalues or debug.getupvalues
 local setupvalue = setupvalue or debug.setupvalue
-local network, index
+local network
 return function()
 	-- hook mouse cooldown and network
 	local registry = (getreg or debug.getregistry)()
